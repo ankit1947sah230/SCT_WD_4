@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch Web Application</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Stopwatch</h1>
+        <div id="display">00:00:00</div>
+        <div id="laps"></div>
+        <div class="buttons">
+            <button onclick="startStop()">Start/Pause</button>
+            <button onclick="reset()">Reset</button>
+            <button onclick="lap()">Lap</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+<script>
+    let startTime, updatedTime, difference, tInterval;
+    let running = false;
+
+    function startStop() {
+        if (!running) {
+            startTime = new Date().getTime();
+            tInterval = setInterval(updateDisplay, 100);
+            running = true;
+        } else {
+            clearInterval(tInterval);
+            running = false;
+        }
+    }
+
+    function reset() {
+        clearInterval(tInterval);
+        running = false;
+        difference = 0;
+        document.getElementById("display").innerHTML = "00:00:00";
+        document.getElementById("laps").innerHTML = "";
+    }
+
+    function lap() {
+        const lapTime = formatTime(difference);
+        const lapsDiv = document.getElementById("laps");
+        const lapElement = document.createElement("div");
+        lapElement.textContent = `Lap: ${lapTime}`;
+        lapsDiv.appendChild(lapElement);
+    }
+
+    function updateDisplay() {
+        updatedTime = new Date().getTime();
+        difference = updatedTime - startTime;
+
+        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        document.getElementById("display").innerHTML =
+            (hours < 10 ? "0" + hours : hours) + ":" +
+            (minutes < 10 ? "0" + minutes : minutes) + ":" +
+            (seconds < 10 ? "0" + seconds : seconds);
+    }
+
+    function formatTime(ms) {
+        const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((ms / (1000 * 60)) % 60);
+        const seconds = Math.floor((ms / 1000) % 60);
+        return `${hours < 10 ? "0" + hours : hours}:${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+    }
+</script
